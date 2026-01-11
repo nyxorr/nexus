@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS | Sistema Completo Funcional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0a0a15;
+            --secondary-bg: #121225;
+            --card-bg: #1a1a3a;
+            --card-hover: #20204a;
+            --accent-color: #00e5ff;
+            --accent-secondary: #7a5cff;
+            --text-primary: #e6e6ff;
+            --text-secondary: #9999cc;
+            --border-color: #2a2a55;
+            --success-color: #00ff9d;
+            --danger-color: #ff3860;
+            --warning-color: #ffaa00;
+            --public-color: #00cc88;
+            --private-color: #ff6b6b;
+            --password-color: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Bolhas animadas */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 229, 255, 0.1);
+            animation: float 20s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            50% { transform: translateY(-50vh) scale(1); opacity: 0.5; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(42, 42, 85, 0.5);
+            position: sticky;
+            top: 0;
+            background-color: rgba(10, 10, 21, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background-color: rgba(18, 18, 37, 0.8);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background-color: rgba(122, 92, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-color));
+            color: var(--primary-bg);
+        }
+
+        .create-btn {
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-color));
+            color: var(--primary-bg);
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(122, 92, 255, 0.4);
+        }
+
+        /* Hero */
+        .hero-section {
+            padding: 60px 0 40px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .page-card {
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .page-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(122, 92, 255, 0.5);
+            background-color: var(--card-hover);
+        }
+
+        .card-header {
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .visibility-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .visibility-public {
+            background-color: rgba(0, 204, 136, 0.15);
+            color: var(--public-color);
+        }
+
+        .visibility-private {
+            background-color: rgba(255, 107, 107, 0.15);
+            color: var(--private-color);
+        }
+
+        .visibility-password {
+            background-color: rgba(255, 170, 0, 0.15);
+            color: var(--password-color);
+        }
+
+        .card-id {
+            background-color: rgba(0, 229, 255, 0.1);
+            color: var(--accent-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-preview {
+            background-color: rgba(10, 10, 21, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            height: 150px;
+            overflow: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-actions {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .card-btn {
+            padding: 11px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .view-btn {
+            background-color: rgba(0, 229, 255, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+
+        .view-btn:hover {
+            background-color: rgba(0, 229, 255, 0.2);
+        }
+
+        .delete-btn {
+            background-color: rgba(255, 56, 96, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(255, 56, 96, 0.3);
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(255, 56, 96, 0.2);
+        }
+
+        /* Modais */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: var(--secondary-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(10, 10, 21, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .password-input-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .password-input-container.show {
+            display: block;
+        }
+
+        .modal-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-color));
+            color: var(--primary-bg);
+        }
+
+        /* Visualizador com blur */
+        .page-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--primary-bg);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .page-viewer.active {
+            display: flex;
+        }
+
+        .viewer-header {
+            background-color: var(--secondary-bg);
+            padding: 22px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .viewer-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .viewer-content {
+            flex-grow: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .viewer-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transition: filter 0.5s ease;
+        }
+
+        /* Overlay de senha */
+        .password-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 21, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .password-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(10, 10, 21, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .password-error {
+            color: var(--danger-color);
+            margin-top: 10px;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+            background-color: rgba(26, 26, 58, 0.6);
+            border-radius: 20px;
+            border: 2px dashed var(--border-color);
+            margin-bottom: 60px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bolhas animadas -->
+    <div id="bubbles-container"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-icon">N</div>
+                    <div class="logo-text">NEXUS</div>
+                </div>
+                
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-tab="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="nav-tab" data-tab="my-pages">
+                        <i class="fas fa-file-code"></i> Minhas Páginas
+                    </button>
+                    <button class="nav-tab" data-tab="shared">
+                        <i class="fas fa-database"></i> Banco Compartilhado
+                    </button>
+                </div>
+                
+                <button class="create-btn" id="create-page-btn">
+                    <i class="fas fa-plus"></i> Nova Página
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container">
+        <!-- Dashboard -->
+        <section class="tab-content active" id="dashboard-content">
+            <div class="hero-section">
+                <h1 class="hero-title">Sistema NEXUS Hub</h1>
+                <p class="hero-subtitle">
+                    Crie páginas HTML com proteção por senha. Páginas protegidas aparecem borradas até que a senha correta seja inserida.
+                </p>
+                <button class="create-btn" id="hero-create-btn">
+                    <i class="fas fa-plus-circle"></i> Criar Primeira Página
+                </button>
+            </div>
+            
+            <div class="cards-grid" id="dashboard-pages-container">
+                <!-- Páginas recentes serão carregadas aqui -->
+            </div>
+            
+            <div class="empty-state" id="dashboard-empty">
+                <i class="fas fa-code"></i>
+                <h3>Nenhuma página recente</h3>
+                <p>Crie sua primeira página HTML para começar.</p>
+            </div>
+        </section>
+
+        <!-- Minhas Páginas -->
+        <section class="tab-content" id="my-pages-content">
+            <div class="cards-grid" id="my-pages-container">
+                <!-- Minhas páginas serão carregadas aqui -->
+            </div>
+            
+            <div class="empty-state" id="my-pages-empty">
+                <i class="fas fa-file-code"></i>
+                <h3>Nenhuma página criada</h3>
+                <p>Comece criando sua primeira página HTML personalizada.</p>
+            </div>
+        </section>
+
+        <!-- Banco Compartilhado -->
+        <section class="tab-content" id="shared-content">
+            <div class="cards-grid" id="shared-container">
+                <!-- Páginas compartilhadas serão carregadas aqui -->
+            </div>
+            
+            <div class="empty-state" id="shared-empty">
+                <i class="fas fa-database"></i>
+                <h3>Banco de dados vazio</h3>
+                <p>Nenhuma página foi compartilhada ainda.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para criação de páginas -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Criar Nova Página</h3>
+                <button class="close-modal" id="close-create">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="page-form">
+                    <div class="form-group">
+                        <label for="page-title" class="form-label">Título da Página</label>
+                        <input type="text" id="page-title" class="form-control" placeholder="Digite um título" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="page-html" class="form-label">Código HTML</label>
+                        <textarea id="page-html" class="form-control" rows="10" placeholder="Digite seu código HTML" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Proteção</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="visibility" value="public" checked>
+                                <span>Pública (Qualquer um pode ver)</span>
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="visibility" value="password">
+                                <span>Protegida por Senha (Aparece borrada)</span>
+                            </label>
+                            
+                            <label class="radio-option">
+                                <input type="radio" name="visibility" value="private">
+                                <span>Privada (Só eu vejo)</span>
+                            </label>
+                        </div>
+                        
+                        <div class="password-input-container" id="password-container">
+                            <label for="page-password" class="form-label">Senha</label>
+                            <input type="password" id="page-password" class="form-control" placeholder="Digite uma senha">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn" id="cancel-create">Cancelar</button>
+                <button class="btn btn-primary" id="publish-page">
+                    <i class="fas fa-paper-plane"></i> Publicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualizador com blur -->
+    <div class="page-viewer" id="page-viewer">
+        <div class="viewer-header">
+            <div class="viewer-title" id="viewer-title">Título da Página</div>
+            <button class="close-modal" id="close-viewer">&times;</button>
+        </div>
+        
+        <div class="viewer-content">
+            <!-- Overlay de senha -->
+            <div class="password-overlay" id="password-overlay">
+                <div class="password-container">
+                    <h3><i class="fas fa-lock"></i> Página Protegida</h3>
+                    <p>Esta página está protegida por senha.</p>
+                    <input type="password" id="input-password" class="password-input" placeholder="Digite a senha">
+                    <div class="password-error" id="password-error">
+                        Senha incorreta. Tente novamente.
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                        <button class="card-btn" id="cancel-password">Cancelar</button>
+                        <button class="card-btn view-btn" id="submit-password">Acessar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Iframe -->
+            <iframe class="viewer-iframe" id="viewer-iframe" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SISTEMA PRINCIPAL - CORRIGIDO E FUNCIONAL
+        // ============================================
+        
+        class NexusSystem {
+            constructor() {
+                // Inicializar dados
+                this.pages = {
+                    local: JSON.parse(localStorage.getItem('nexusPages')) || [],
+                    shared: JSON.parse(localStorage.getItem('nexusSharedPages')) || []
+                };
+                
+                this.currentTab = 'dashboard';
+                this.currentPage = null;
+                
+                // Inicializar
+                this.init();
+            }
+            
+            init() {
+                // Criar bolhas
+                this.createBubbles();
+                
+                // Configurar eventos
+                this.setupEventListeners();
+                
+                // Carregar dados de exemplo se vazio
+                if (this.pages.local.length === 0) {
+                    this.createExamplePages();
+                }
+                
+                // Renderizar dashboard
+                this.renderDashboard();
+            }
+            
+            createBubbles() {
+                const container = document.getElementById('bubbles-container');
+                for (let i = 0; i < 15; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
+                    bubble.style.width = Math.random() * 60 + 20 + 'px';
+                    bubble.style.height = bubble.style.width;
+                    bubble.style.left = Math.random() * 100 + '%';
+                    bubble.style.background = `rgba(${Math.random() * 100}, ${Math.random() * 200 + 55}, 255, 0.1)`;
+                    bubble.style.animationDelay = Math.random() * 20 + 's';
+                    bubble.style.animationDuration = Math.random() * 10 + 20 + 's';
+                    container.appendChild(bubble);
+                }
+            }
+            
+            createExamplePages() {
+                const examplePages = [
+                    {
+                        id: Date.now(),
+                        title: "Página Pública de Exemplo",
+                        html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Exemplo Público</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0a15, #121225);
+            color: #e6e6ff;
+        }
+        h1 {
+            color: #00e5ff;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(26, 26, 58, 0.8);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #2a2a55;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Página de Exemplo</h1>
+    <div class="card">
+        <h2>Esta é uma página pública</h2>
+        <p>Qualquer pessoa pode visualizar esta página sem senha.</p>
+    </div>
+</body>
+</html>`,
+                        visibility: 'public',
+                        password: null,
+                        date: new Date().toISOString(),
+                        shared: true
+                    },
+                    {
+                        id: Date.now() + 1,
+                        title: "Página com Senha (1234)",
+                        html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Protegida</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0a15, #1a1a35);
+            color: #e6e6ff;
+        }
+        .container {
+            background: rgba(26, 26, 58, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #2a2a55;
+        }
+        h1 {
+            color: #7a5cff;
+            margin-bottom: 20px;
+        }
+        .unlocked {
+            background: rgba(122, 92, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px dashed #7a5cff;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Conteúdo Desbloqueado!</h1>
+        <p>Você inseriu a senha correta e agora pode ver esta página.</p>
+        <div class="unlocked">
+            <h2>🔓 Informação Confidencial</h2>
+            <p>Esta página estava protegida por senha e agora está visível.</p>
+            <p>Senha usada: <strong>1234</strong></p>
+        </div>
+    </div>
+</body>
+</html>`,
+                        visibility: 'password',
+                        password: '1234',
+                        date: new Date().toISOString(),
+                        shared: true
+                    }
+                ];
+                
+                examplePages.forEach(page => {
+                    this.pages.local.push(page);
+                    this.pages.shared.push(page);
+                });
+                
+                this.saveData();
+            }
+            
+            saveData() {
+                localStorage.setItem('nexusPages', JSON.stringify(this.pages.local));
+                localStorage.setItem('nexusSharedPages', JSON.stringify(this.pages.shared));
+            }
+            
+            setupEventListeners() {
+                // Navegação
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabId = tab.dataset.tab;
+                        this.switchTab(tabId);
+                    });
+                });
+                
+                // Botões de criação
+                document.getElementById('create-page-btn').addEventListener('click', () => this.openCreateModal());
+                document.getElementById('hero-create-btn').addEventListener('click', () => this.openCreateModal());
+                
+                // Modal de criação
+                document.getElementById('close-create').addEventListener('click', () => this.closeCreateModal());
+                document.getElementById('cancel-create').addEventListener('click', () => this.closeCreateModal());
+                document.getElementById('publish-page').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.publishPage();
+                });
+                
+                // Opções de visibilidade
+                document.querySelectorAll('input[name="visibility"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const container = document.getElementById('password-container');
+                        container.classList.toggle('show', e.target.value === 'password');
+                    });
+                });
+                
+                // Visualizador
+                document.getElementById('close-viewer').addEventListener('click', () => this.closeViewer());
+                document.getElementById('cancel-password').addEventListener('click', () => this.closeViewer());
+                document.getElementById('submit-password').addEventListener('click', () => this.checkPassword());
+                document.getElementById('input-password').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkPassword();
+                });
+                
+                // Fechar modais clicando fora
+                document.getElementById('create-modal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('create-modal')) {
+                        this.closeCreateModal();
+                    }
+                });
+            }
+            
+            switchTab(tabId) {
+                // Atualizar navegação
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+                
+                // Atualizar conteúdo
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // Renderizar conteúdo
+                this.currentTab = tabId;
+                this.renderCurrentTab();
+            }
+            
+            renderCurrentTab() {
+                switch(this.currentTab) {
+                    case 'dashboard':
+                        this.renderDashboard();
+                        break;
+                    case 'my-pages':
+                        this.renderMyPages();
+                        break;
+                    case 'shared':
+                        this.renderSharedPages();
+                        break;
+                }
+            }
+            
+            renderDashboard() {
+                const container = document.getElementById('dashboard-pages-container');
+                const emptyState = document.getElementById('dashboard-empty');
+                
+                // Pegar 6 páginas mais recentes
+                const recentPages = [...this.pages.local]
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 6);
+                
+                if (recentPages.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                container.innerHTML = recentPages.map(page => this.createPageCard(page, 'local')).join('');
+                this.attachCardEvents();
+            }
+            
+            renderMyPages() {
+                const container = document.getElementById('my-pages-container');
+                const emptyState = document.getElementById('my-pages-empty');
+                
+                if (this.pages.local.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                const sortedPages = [...this.pages.local].sort((a, b) => new Date(b.date) - new Date(a.date));
+                container.innerHTML = sortedPages.map(page => this.createPageCard(page, 'local')).join('');
+                this.attachCardEvents();
+            }
+            
+            renderSharedPages() {
+                const container = document.getElementById('shared-container');
+                const emptyState = document.getElementById('shared-empty');
+                
+                if (this.pages.shared.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                const sortedPages = [...this.pages.shared].sort((a, b) => new Date(b.date) - new Date(a.date));
+                container.innerHTML = sortedPages.map(page => this.createPageCard(page, 'shared')).join('');
+                this.attachCardEvents();
+            }
+            
+            createPageCard(page, type) {
+                const date = new Date(page.date).toLocaleDateString('pt-BR');
+                const shortId = page.id.toString().slice(-6);
+                
+                let badgeClass = 'visibility-public';
+                let badgeText = 'Pública';
+                
+                if (page.visibility === 'private') {
+                    badgeClass = 'visibility-private';
+                    badgeText = 'Privada';
+                } else if (page.visibility === 'password') {
+                    badgeClass = 'visibility-password';
+                    badgeText = 'Senha';
+                }
+                
+                const previewText = page.html.substring(0, 150) + (page.html.length > 150 ? '...' : '');
+                
+                return `
+                    <div class="page-card" data-id="${page.id}">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">${this.escapeHtml(page.title)}</div>
+                                <div class="card-meta">
+                                    <span class="visibility-badge ${badgeClass}">${badgeText}</span>
+                                    <span style="color: var(--text-secondary); font-size: 0.9rem;">${date}</span>
+                                </div>
+                            </div>
+                            <div class="card-id">#${shortId}</div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-preview">${this.escapeHtml(previewText)}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-btn view-btn" data-id="${page.id}" data-type="${type}">
+                                <i class="fas fa-eye"></i> Visualizar
+                            </button>
+                            ${type === 'local' ? `
+                                <button class="card-btn delete-btn" data-id="${page.id}">
+                                    <i class="fas fa-trash"></i> Excluir
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            attachCardEvents() {
+                // Botões de visualizar
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pageId = parseInt(btn.dataset.id);
+                        const type = btn.dataset.type;
+                        this.viewPage(pageId, type);
+                    });
+                });
+                
+                // Botões de excluir
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pageId = parseInt(btn.dataset.id);
+                        if (confirm('Excluir esta página?')) {
+                            this.deletePage(pageId);
+                        }
+                    });
+                });
+            }
+            
+            deletePage(pageId) {
+                // Remover do local
+                this.pages.local = this.pages.local.filter(p => p.id !== pageId);
+                
+                // Remover do compartilhado
+                this.pages.shared = this.pages.shared.filter(p => p.id !== pageId);
+                
+                // Salvar
+                this.saveData();
+                
+                // Recarregar view atual
+                this.renderCurrentTab();
+                
+                // Mostrar mensagem
+                alert('Página excluída com sucesso!');
+            }
+            
+            viewPage(pageId, type) {
+                // Encontrar página
+                let page;
+                if (type === 'shared') {
+                    page = this.pages.shared.find(p => p.id === pageId);
+                } else {
+                    page = this.pages.local.find(p => p.id === pageId);
+                }
+                
+                if (!page) return;
+                
+                this.currentPage = page;
+                
+                // Atualizar título
+                document.getElementById('viewer-title').textContent = page.title;
+                
+                // Carregar no iframe
+                const iframe = document.getElementById('viewer-iframe');
+                iframe.srcdoc = page.html;
+                
+                // Configurar blur e senha
+                const overlay = document.getElementById('password-overlay');
+                const error = document.getElementById('password-error');
+                
+                // Resetar estado
+                overlay.style.display = 'flex';
+                error.classList.remove('show');
+                document.getElementById('input-password').value = '';
+                
+                if (page.visibility === 'password') {
+                    // Aplicar blur
+                    iframe.style.filter = 'blur(20px)';
+                } else {
+                    // Sem blur, esconder overlay
+                    iframe.style.filter = 'none';
+                    overlay.style.display = 'none';
+                }
+                
+                // Abrir visualizador
+                document.getElementById('page-viewer').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Focar no campo de senha se necessário
+                if (page.visibility === 'password') {
+                    setTimeout(() => {
+                        document.getElementById('input-password').focus();
+                    }, 300);
+                }
+            }
+            
+            checkPassword() {
+                const input = document.getElementById('input-password').value;
+                const error = document.getElementById('password-error');
+                const overlay = document.getElementById('password-overlay');
+                const iframe = document.getElementById('viewer-iframe');
+                
+                if (!this.currentPage) return;
+                
+                if (this.currentPage.password === input) {
+                    // Senha correta
+                    iframe.style.filter = 'none';
+                    overlay.style.display = 'none';
+                } else {
+                    // Senha incorreta
+                    error.classList.add('show');
+                    document.getElementById('input-password').value = '';
+                    document.getElementById('input-password').focus();
+                }
+            }
+            
+            closeViewer() {
+                document.getElementById('page-viewer').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                this.currentPage = null;
+            }
+            
+            openCreateModal() {
+                // Resetar formulário
+                document.getElementById('page-form').reset();
+                document.getElementById('password-container').classList.remove('show');
+                
+                // Definir template padrão
+                const htmlInput = document.getElementById('page-html');
+                if (!htmlInput.value.trim()) {
+                    htmlInput.value = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Minha Página</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0a15, #121225);
+            color: #e6e6ff;
+        }
+        h1 {
+            color: #00e5ff;
+        }
+        .content {
+            background: rgba(26, 26, 58, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #2a2a55;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minha Página Personalizada</h1>
+    <div class="content">
+        <p>Criei esta página usando o NEXUS Hub.</p>
+    </div>
+</body>
+</html>`;
+                }
+                
+                document.getElementById('create-modal').classList.add('active');
+            }
+            
+            closeCreateModal() {
+                document.getElementById('create-modal').classList.remove('active');
+            }
+            
+            publishPage() {
+                const title = document.getElementById('page-title').value.trim();
+                const html = document.getElementById('page-html').value.trim();
+                const visibility = document.querySelector('input[name="visibility"]:checked').value;
+                const password = document.getElementById('page-password').value;
+                
+                // Validação
+                if (!title || !html) {
+                    alert('Preencha todos os campos!');
+                    return;
+                }
+                
+                if (visibility === 'password' && !password) {
+                    alert('Digite uma senha para páginas protegidas!');
+                    return;
+                }
+                
+                // Criar página
+                const newPage = {
+                    id: Date.now(),
+                    title: title,
+                    html: html,
+                    visibility: visibility,
+                    password: visibility === 'password' ? password : null,
+                    date: new Date().toISOString(),
+                    shared: true
+                };
+                
+                // Adicionar
+                this.pages.local.unshift(newPage);
+                this.pages.shared.unshift(newPage);
+                
+                // Salvar
+                this.saveData();
+                
+                // Fechar modal e recarregar
+                this.closeCreateModal();
+                this.renderCurrentTab();
+                
+                // Mensagem de sucesso
+                alert('Página criada com sucesso!');
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // ============================================
+        // INICIALIZAR SISTEMA
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            window.nexus = new NexusSystem();
+        });
+    </script>
+</body>
+</html>
